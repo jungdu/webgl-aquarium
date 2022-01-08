@@ -1,15 +1,33 @@
-import { AmbientLight, BoxGeometry, Mesh, MeshBasicMaterial, PerspectiveCamera, Scene, WebGLRenderer } from "three"
+import { AmbientLight, DirectionalLight, Group, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import { getFishGltf } from "./Fish";
 import { addOrbitControls, startAnimation } from "./utils";
 
+
 function initCameraPosition(camera: PerspectiveCamera){
-  camera.position.x = 10;
-  camera.position.y = 10;
-  camera.position.z = 10;
+  camera.position.x = 0;
+  camera.position.y = 0;
+  camera.position.z = 30;
   
   camera.lookAt(0, 0, 0);
 }
 
-function main(){
+function addRights(scene: Scene){
+  const ambientLight = new AmbientLight(0xffffff, 2);
+  scene.add(ambientLight);
+
+  const directionalLight = new DirectionalLight(0xffffff, 0.5)
+  directionalLight.position.set(-1, 10, 0)
+  scene.add(directionalLight)
+}
+
+function translateGroup(group: Group, xyz: [number, number, number]){
+  const [x, y, z] = xyz;
+  group.translateX(x);
+  group.translateY(y);
+  group.translateZ(z);
+}
+
+async function main(){
   const mainCanvas = document.getElementById("mainCanvas") as HTMLCanvasElement;
   const {
     innerHeight: height,
@@ -27,12 +45,29 @@ function main(){
   initCameraPosition(camera)
   addOrbitControls(camera, mainCanvas);
   startAnimation(renderer, camera, scene);
+  addRights(scene);
 
 
-  const geometry = new BoxGeometry();
-  const material = new MeshBasicMaterial({color: 0x00ff00});
-  const cube = new Mesh(geometry, material);
-  scene.add(cube);
+  // Add Fish objects
+  getFishGltf("BlueGoldfish").then((gltf) => {
+    scene.add(gltf.scene);
+    translateGroup(gltf.scene, [5, 5, 0])
+  });
+
+  getFishGltf("CoralGrouper").then((gltf) => {
+    scene.add(gltf.scene);
+    translateGroup(gltf.scene, [5, -5, 0])
+  });
+
+  getFishGltf("Piranha").then((gltf) => {
+    scene.add(gltf.scene);
+    translateGroup(gltf.scene, [-5, -5, 0])
+  });
+
+  getFishGltf("Sunfish").then((gltf) => {
+    scene.add(gltf.scene);
+    translateGroup(gltf.scene, [-5, 5, 0])
+  });
 }
 
 main();
