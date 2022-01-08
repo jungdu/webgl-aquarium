@@ -15,3 +15,16 @@ function tick(renderer: WebGLRenderer, camera: PerspectiveCamera, scene: Scene){
     tick(renderer, camera, scene);
   })
 }
+
+export function resizeFullScreen(renderer: WebGLRenderer ,camera: PerspectiveCamera){
+  window.addEventListener("resize", function(){
+    const {
+      innerWidth: width,
+      innerHeight: height
+    } = window;
+    camera.aspect = width/height;
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(width, height);
+  })
+}

@@ -1,12 +1,12 @@
-import { AmbientLight, DirectionalLight, Group, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import { AmbientLight, Color, DirectionalLight, Group, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
 import { getFishGltf } from "./Fish";
-import { addOrbitControls, startAnimation } from "./utils";
+import { addOrbitControls, resizeFullScreen, startAnimation } from "./utils";
 
 
 function initCameraPosition(camera: PerspectiveCamera){
   camera.position.x = 0;
   camera.position.y = 0;
-  camera.position.z = 30;
+  camera.position.z = 50;
   
   camera.lookAt(0, 0, 0);
 }
@@ -36,8 +36,10 @@ async function main(){
 
   const scene = new Scene();
   const renderer = new WebGLRenderer({
-    canvas: mainCanvas
+    canvas: mainCanvas,
+    alpha: true
   }) 
+  
 
   const camera = new PerspectiveCamera(45, width/height, 0.1, 100);
   renderer.setSize(width, height);
@@ -46,7 +48,8 @@ async function main(){
   addOrbitControls(camera, mainCanvas);
   startAnimation(renderer, camera, scene);
   addRights(scene);
-
+  resizeFullScreen(renderer, camera);
+  renderer.setClearColor( 0x000000, 0 );
 
   // Add Fish objects
   getFishGltf("BlueGoldfish").then((gltf) => {
