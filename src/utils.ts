@@ -1,6 +1,7 @@
 import { PerspectiveCamera, Scene, WebGLRenderer } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { XYZ } from "./types";
 
 export function addOrbitControls(camera: PerspectiveCamera, canvas: HTMLCanvasElement){
   new OrbitControls(camera, canvas);
@@ -37,4 +38,10 @@ export function getGltf(filePath: string){
       resolve(gltf)
     })
   })
+}
+
+export function mapXYZ(xyzA: XYZ, xyzB:XYZ, func: (a:number, b:number, idx: number) => number):XYZ{
+  const [xA, yA, zA] = xyzA;
+  const [xB, yB, zB] = xyzB;
+  return [func(xA, xB, 0), func(yA, yB, 1), func(zA, zB, 2)];
 }

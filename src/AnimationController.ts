@@ -3,10 +3,10 @@ import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 import DeltaTimer from "./DeltaTimer";
 
 export default class AnimationController {
-	animations: AnimationClip[];
-	animationMixer: AnimationMixer;
-	currentAction: AnimationAction | null = null;
-	animationHandler: (() => void) | null = null;
+	private animations: AnimationClip[];
+	private animationMixer: AnimationMixer;
+	private currentAction: AnimationAction | null = null;
+	private animationHandler: (() => void) | null = null;
 
 	constructor(private gltf: GLTF, private deltaTimer: DeltaTimer) {
 		this.animationMixer = new AnimationMixer(gltf.scene);

@@ -3,6 +3,9 @@ import { Clock } from "three";
 type RequestAnimationFrameHandler = (deltaTime: number) => void;
 
 export default class DeltaTimer {
+  // DeltaTimer is singleton class
+  private static instance: DeltaTimer;
+
 	clock = new Clock();
 	previousTime: number = 0;
 	callbacks: RequestAnimationFrameHandler[] = [];
@@ -10,6 +13,14 @@ export default class DeltaTimer {
 	constructor() {
 		this.tick();
 	}
+
+  static getInstance(): DeltaTimer{
+    if(!DeltaTimer.instance){
+      DeltaTimer.instance = new DeltaTimer();
+    }
+
+    return DeltaTimer.instance;
+  }
 
 	private executeCallbacks(deltaTime: number) {
 		this.callbacks.forEach((cb) => cb(deltaTime));
