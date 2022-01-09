@@ -1,4 +1,6 @@
-import { AmbientLight, Color, DirectionalLight, Group, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import { AmbientLight, AnimationAction, Color, DirectionalLight, Group, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import AnimationController from "./AnimationController";
+import DeltaTimer from "./DeltaTimer";
 import { getFishGltf } from "./Fish";
 import { addOrbitControls, resizeFullScreen, startAnimation } from "./utils";
 
@@ -41,7 +43,7 @@ async function main(){
   }) 
   
 
-  const camera = new PerspectiveCamera(45, width/height, 0.1, 100);
+  const camera = new PerspectiveCamera(45, width/height, 0.1, 500);
   renderer.setSize(width, height);
 
   initCameraPosition(camera)
@@ -52,24 +54,33 @@ async function main(){
   renderer.setClearColor( 0x000000, 0 );
 
   // Add Fish objects
+  const deltaTimer = new DeltaTimer()
   getFishGltf("BlueGoldfish").then((gltf) => {
     scene.add(gltf.scene);
     translateGroup(gltf.scene, [5, 5, 0])
+    const animationController = new AnimationController(gltf, deltaTimer);
+    animationController.playAction(0);
   });
 
   getFishGltf("CoralGrouper").then((gltf) => {
     scene.add(gltf.scene);
     translateGroup(gltf.scene, [5, -5, 0])
+    const animationController = new AnimationController(gltf, deltaTimer);
+    animationController.playAction(0);
   });
 
   getFishGltf("Piranha").then((gltf) => {
     scene.add(gltf.scene);
     translateGroup(gltf.scene, [-5, -5, 0])
+    const animationController = new AnimationController(gltf, deltaTimer);
+    animationController.playAction(0);
   });
 
   getFishGltf("Sunfish").then((gltf) => {
     scene.add(gltf.scene);
     translateGroup(gltf.scene, [-5, 5, 0])
+    const animationController = new AnimationController(gltf, deltaTimer);
+    animationController.playAction(0);
   });
 }
 
