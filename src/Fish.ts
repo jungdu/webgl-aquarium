@@ -7,7 +7,8 @@ import { getGltf } from "./utils";
 
 const FISH_FILE_ROOT_PATH = "./glb/fish/";
 
-type FishName = "BlueGoldfish" | "Piranha" | "CoralGrouper" | "Sunfish";
+export const FISH_NAMES = ["BlueGoldfish" ,"Piranha" ,"CoralGrouper" ,"Sunfish"] as const;
+export type FishName = typeof FISH_NAMES[number];
 
 export default class Fish {
 	private deltaTimer = new DeltaTimer();

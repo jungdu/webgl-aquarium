@@ -1,12 +1,7 @@
-import { AmbientLight, AnimationAction, Color, DirectionalLight, Group, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
-import AnimationController from "./AnimationController";
-import DeltaTimer from "./DeltaTimer";
-import Fish, { getFishGltf } from "./Fish";
+import { AmbientLight, DirectionalLight, Group, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from "three"
+import Fish, { FishName, FISH_NAMES } from "./Fish";
 import { XYZ } from "./types";
-import { addOrbitControls, mapXYZ, resizeFullScreen, startAnimation } from "./utils";
-
-const CENTER_POSITION:XYZ= [0, 0, -40];
-
+import { addOrbitControls, getRandomNumber, mapXYZ, resizeFullScreen, startAnimation } from "./utils";
 
 function initCameraPosition(camera: PerspectiveCamera){
   camera.position.x = 0;
@@ -57,71 +52,44 @@ async function main(){
   renderer.setClearColor( 0x000000, 0 );
 
   // Add Fish objects
-  Fish.create("BlueGoldfish", scene).then((fish) => {
-    const initPosition:XYZ = [10, -10, -35];
-    fish.setPosition(initPosition);
-    startMovingFish(fish);
-  });
+  createRandomFish(15, scene)
+}
 
-  Fish.create("BlueGoldfish", scene).then((fish) => {
-    const initPosition:XYZ = [14, -2, -35];
-    fish.setPosition(initPosition);
-    startMovingFish(fish);
-  });
+function createRandomFish(count: number, scene:Scene){
+  for(let i = 0; i < count; i ++){
+    const fishName = FISH_NAMES[Math.floor(Math.random() * FISH_NAMES.length)];
+    createFish(fishName, scene);
+  }
+}
 
-  Fish.create("CoralGrouper", scene).then((fish) => {
-    fish.setPosition([-10, 10, -43]);
-    startMovingFish(fish);
-  });
-
-  Fish.create("CoralGrouper", scene).then((fish) => {
-    fish.setPosition([-10, 10, -70]);
-    startMovingFish(fish);
-  });
-
-  Fish.create("Sunfish", scene).then((fish) => {
-    fish.setPosition([-20, -10, -45]);
-    startMovingFish(fish);
-  });
-
-  Fish.create("Sunfish", scene).then((fish) => {
-    fish.setPosition([-30, -10, -45]);
-    startMovingFish(fish);
-  });
-
-  Fish.create("Piranha", scene).then((fish) => {
-    fish.setPosition([10, 10, -37]);
-    startMovingFish(fish)
-  });
-
-
-  Fish.create("Piranha", scene).then((fish) => {
-    fish.setPosition([12, 15, -40]);
+function createFish(fishName:FishName, scene:Scene){
+  Fish.create(fishName, scene).then((fish) => {
+    fish.setPosition([getRandomNumber(-40, 40), getRandomNumber(-20, 20), getRandomNumber(-80, 0)]);
     startMovingFish(fish)
   });
 }
 
 function startMovingFish(fish: Fish){
   updateFishVelocity(fish);
+
+  // Fish change direction and velocity
   setInterval(() => {
-    if(Math.random() > 0.65){
+    if(Math.random() > 0.96){
       updateFishVelocity(fish);
     }
-  }, 3000)
+  }, 500)
 }
 
 function updateFishVelocity(fish:Fish){
   const {x,y,z} = fish.group.position;
-  const velocity = getVelocity(CENTER_POSITION, [x, y, z]);
+  const destPosition:XYZ = [getRandomNumber(-20, 20), getRandomNumber(-20, 20), getRandomNumber(-80, 0)]
+  const velocity = getVelocity(destPosition, [x, y, z]);
   fish.setVelocity([ velocity.x,velocity.y,velocity.z ]);
 }
 
-function getVelocity(centerPosition:XYZ, initPosition:XYZ){
-  const [x,y,z] = mapXYZ(centerPosition, initPosition, (a, b, i) => {
-    const randomScale = i === 1 ? 2 : 5
-    return ((a + (Math.random() * randomScale) ) - b)
-  });
-  return (new Vector3(x, y, z)).normalize().multiplyScalar((Math.random() * 3) + 1);
+function getVelocity(destPosition:XYZ, initPosition:XYZ){
+  const [x,y,z] = mapXYZ(destPosition, initPosition, (a, b) => a - b);
+  return (new Vector3(x, y, z)).normalize().multiplyScalar((Math.random() * 5) + 1);
 }
 
 main();

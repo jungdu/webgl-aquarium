@@ -45,3 +45,8 @@ export function mapXYZ(xyzA: XYZ, xyzB:XYZ, func: (a:number, b:number, idx: numb
   const [xB, yB, zB] = xyzB;
   return [func(xA, xB, 0), func(yA, yB, 1), func(zA, zB, 2)];
 }
+
+export function getRandomNumber(min: number, max: number){
+  const distance = max - min;
+  return (distance * Math.random()) + min;
+}
